@@ -1,4 +1,4 @@
-Part Three:  Enhancements
+
 -------------------------
 
 Add the following features to the program:
