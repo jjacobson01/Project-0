@@ -127,10 +127,14 @@ int main(int argc, char **argv)
       }
     } else {
       /* C3: the LENGTH macro will not work anymore, since entries will be a pointer, not an array */
-      if (entryCount < LENGTH(entries)) {
-        entries[entryCount].word = *argv;
-        entries[entryCount++].counter = 0;
-      }
+       if (entryCount < LENGTH(entries)-1) {
+                entries[entryCount].word = * argv+entryCount+1;
+                entries[entryCount++].counter = 0;
+            }
+      // if (entryCount < LENGTH(entries)) {
+      //   entries[entryCount].word = *argv;
+      //   entries[entryCount++].counter = 0;
+      // }
     }
     argv++;
   }
