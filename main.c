@@ -72,7 +72,7 @@ void print_result(WordCountEntry entries[], int entry_count)
     int i = 0;
     /* C2: send output to the right stream, use fprintf */
 
-    printf("Result:\n");
+    fprintf(stdout,"Result:\n");
     while (i < entry_count)
     {
         printf("%s:%d\n", entries[i].word, entries[i].counter);
@@ -84,7 +84,7 @@ void printHelp(const char *name)
 {
     /* C2: send output to the right stream, use fprintf */
 
-    printf("usage: %s [-h] ... \n", name);
+    pfrintf(stderr,"usage: %s [-h] ... \n", name);
 }
 
 int main(int argc, char **argv)
@@ -128,7 +128,7 @@ int main(int argc, char **argv)
                 printHelp(prog_name);
                 break;
             default:
-                printf("%s: Invalid option %s. Use -h for help.\n", prog_name, *argv);
+                fprintf(stderr,"%s: Invalid option %s. Use -h for help.\n", prog_name, *argv);
                 break;
             }
         }
@@ -146,17 +146,17 @@ int main(int argc, char **argv)
 
     if (entryCount == 0)
     {
-        printf("%s: Please supply at least one word. Use -h for help.\n", prog_name);
+        fprintf("%s: Please supply at least one word. Use -h for help.\n", prog_name);
         return EXIT_FAILURE;
     }
     /* C2: send output to the right stream */
     if (entryCount == 1)
     {
-        printf("Looking for a single word\n");  
+        fprintf("Looking for a single word\n");  
     }
     else
     {
-        printf("Looking for %d words\n", entryCount);
+        fprintf("Looking for %d words\n", entryCount);
     }
 
     process_stream(entries, entryCount);
