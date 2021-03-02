@@ -48,7 +48,7 @@ int process_stream(WordCountEntry entries[], int entry_count)
        For the separator characters we use whitespace (space and
        tab), as well as the newline character '\n'.  We could also
        trim the buffer to get rid of the newline, instead. 
-       strtok returns NULL when no more tokens are available. *
+       strtok returns NULL when no more tokens are available. */
 
        /* Compare against each entry. 
     When you implement C5, you won't be able to process the entries directly from the buffer,
@@ -84,7 +84,7 @@ void printHelp(const char *name)
 {
     /* C2: send output to the right stream, use fprintf */
 
-    pfrintf(stderr,"usage: %s [-h] ... \n", name);
+    fprintf(stderr,"usage: %s [-h] ... \n", name);
 }
 
 int main(int argc, char **argv)
