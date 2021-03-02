@@ -29,16 +29,11 @@ Bug hunting
   4) Explain and fix the argument parsing error. (Why is entrycount never
      zero?)
       entryCount will never be zero because it increments, even if you don't provide an argument.
-      if we do
-
-
-      Parsing error was that It was getting the first argv and incrementing
-      entryCount with that first argv before even getting to the flag. This 
-      would prompt us to continue with the program as normal without any
-      words supplied to it. 
+      It happens before getting to flag. adding 1 increment of the variable argv before starting the
+      the loop will fix this issue.
 
   5) Fix print_result() to print results correctly and in the same order
       as the words were specified on the command line.  Explain your solution.
-      It would not print the various words, I added a temp var "i" to access 
-      he several words and their counts. Via array notation. 
+      Implementing the variable i and initilizing it to 0 and using it to cycle through the array
+      fixed it so that it would print the words correctly.
 

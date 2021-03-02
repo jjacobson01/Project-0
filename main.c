@@ -152,7 +152,7 @@ int main(int argc, char **argv)
     /* C2: send output to the right stream */
     if (entryCount == 1)
     {
-        printf("Looking for a single word\n");
+        printf("Looking for a single word\n");  
     }
     else
     {
