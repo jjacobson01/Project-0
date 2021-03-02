@@ -112,7 +112,6 @@ int main(int argc, char **argv)
     /* C3: allocate (potentially) a little more memory than strictly
        necessary, thus avoiding extensive modifications to the code below. Hint: use malloc */
     entries = (WordCountEntry *)malloc(argc * sizeof(WordCountEntry));
-    char *alloc = malloc(sizeof(char) * 30);
 
     /* B4: fix argv */
 
