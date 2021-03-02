@@ -146,17 +146,17 @@ int main(int argc, char **argv)
 
     if (entryCount == 0)
     {
-        fprintf("%s: Please supply at least one word. Use -h for help.\n", prog_name);
+        fprintf(stderr,"%s: Please supply at least one word. Use -h for help.\n", prog_name);
         return EXIT_FAILURE;
     }
     /* C2: send output to the right stream */
     if (entryCount == 1)
     {
-        fprintf("Looking for a single word\n");  
+        fprintf(stdout,"Looking for a single word\n");  
     }
     else
     {
-        fprintf("Looking for %d words\n", entryCount);
+        fprintf(stdout,"Looking for %d words\n", entryCount);
     }
 
     process_stream(entries, entryCount);
