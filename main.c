@@ -35,7 +35,7 @@ typedef struct
 
 int process_stream(WordCountEntry entries[], int entry_count)
 {
-    char *delimiters = " \n\t";
+    char *separators = " \n\t";
     short line_count = 0;
     char buffer[30];
 
@@ -54,7 +54,7 @@ int process_stream(WordCountEntry entries[], int entry_count)
         /* Compare against each entry. 
     When you implement C5, you won't be able to process the entries directly from the buffer,
     but rather from returned value of strtok. Call "man strtok" in your command line to learn more about strtok*/
-        char *tokens = strtok(buffer, delimiters);
+        char *tokens = strtok(buffer, separators);
         while (tokens != NULL)
         {
             int i = 0;
@@ -64,14 +64,14 @@ int process_stream(WordCountEntry entries[], int entry_count)
                     entries[i].counter++;
                 i++;
             }
-            tokens = strtok(NULL, delimiters);
+            tokens = strtok(NULL, separators);
         }
         line_count++;
     }
     return line_count;
 }
 
-void print_result(WordCountEntry entries[], int entry_count, FILE *output)
+void print_result(FILE *output, WordCountEntry entries[], int entry_count)
 {
     /* B5: introduce a temporary variable i and use it to count up from 0 */
     int i = 0;
@@ -127,7 +127,7 @@ int main(int argc, char **argv)
                 /* C2: -fFILENAME switch: open FILENAME and set it as the output
              stream */
             case 'f':
-                strncpy(alloc, *argv + 2, 20);
+                freopen((*argv+2), "w", output);
                 break;
             /* B3: fix the logical flow error in the switch*/
             case 'h':
@@ -165,7 +165,7 @@ int main(int argc, char **argv)
     }
 
     process_stream(entries, entryCount);
-    print_result(entries, entryCount, output);
+    print_result(output, entries, entryCount);
 
     // FREE MEMORY, CLOSE FILES, STREAMS, etc.
     return EXIT_SUCCESS;
