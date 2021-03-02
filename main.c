@@ -1,189 +1,162 @@
+/*
+About this program:
+- This program counts words.
+- The specific words that will be counted are passed in as command-line arguments.
+- The program reads words (one word per line) from standard input until EOF or an input line starting with a dot '.'
+- The program prints out a summary of the number of times each word has appeared.
+- Various command-line options alter the behavior of the program.
+
+E.g., count the number of times 'cat', 'nap' or 'dog' appears.
+> ./main cat nap dog
+Given input:
+cat
+.
+Expected output:
+Looking for 3 words
+Result:
+cat:1
+nap:0
+dog:0
+*/
+
 #include <stdio.h>
-
 #include <stdlib.h>
-
 #include <string.h>
-
 #include "smp0_tests.h"
 
 #define LENGTH(s) (sizeof(s) / sizeof(*s))
 
 /* Structures */
-
 typedef struct
 {
-
-    char *word;
-
-    int counter;
-
+  char *word;
+  int counter;
 } WordCountEntry;
 
-//WordCountEntry is a structure type , who holds 2 information. 1.*word a pointer to a character string and counter value.
-
 int process_stream(WordCountEntry entries[], int entry_count)
-
 {
+  short line_count = 0;
+  char buffer[30];
 
-    short line_count = 0;
+  /* C4: replace gets with fgets */
+  while (gets(buffer))
+  {
+    if (*buffer == '.')
+      break;
 
-    char buffer[30];
+    /* C5: strtok() can be used to split a line into individual tokens.
+       For the separator characters we use whitespace (space and
+       tab), as well as the newline character '\n'.  We could also
+       trim the buffer to get rid of the newline, instead. 
+       strtok returns NULL when no more tokens are available. *
 
-    while (gets(buffer))
+       /* Compare against each entry. 
+    When you implement C5, you won't be able to process the entries directly from the buffer,
+    but rather from returned value of strtok. Call "man strtok" in your command line to learn more about strtok*/
+
+    int i = 0;
+    while (i < entry_count)
     {
-
-        if (*buffer == '.')
-
-            break;
-
-        /* Compare against each entry */
-
-        int i = 0;
-
-        //Program fix as part of question 3
-
-        while (i <= entry_count)
-        {
-
-            if (!strcmp(entries[i].word, buffer))
-
-                entries[i].counter++;
-
-            i++;
-        }
-
-        line_count++;
+      if (!strcmp(entries[i].word, buffer))
+        entries[i].counter++;
+      i++;
     }
-
-    return line_count;
+    line_count++;
+  }
+  return line_count;
 }
 
 void print_result(WordCountEntry entries[], int entry_count)
-
 {
+  /* B5: introduce a temporary variable i and use it to count up from 0 */
+  int i = 0;
+  /* C2: send output to the right stream, use fprintf */
 
-    int i = 0;
-
-    printf("Result:\n");
-
-    //Program fix as part of question 3
-
-    while (i <= entry_count)
-    {
-
-        printf("%s:%d\n", entries[i].word, entries[i].counter);
-
-        i++;
-    }
+  printf("Result:\n");
+  while (i < entry_count)
+  {
+    printf("%s:%d\n", entries[i].word, entries[i].counter);
+    i++;
+  }
 }
 
-//this function is called when '-h' option is used.
-
 void printHelp(const char *name)
-
 {
+  /* C2: send output to the right stream, use fprintf */
 
-    printf("usage: %s [-h] ... \n", name);
+  printf("usage: %s [-h] ... \n", name);
 }
 
 int main(int argc, char **argv)
-
-//Here argc will contain the number of argument passed and argv will contain pointer to those argument
-
-//./main cat nap dog
-
-//for above input argc=3, argv[0]=main, argv[1]=cat,argv[2]=nap,argv[3]=dog
-
 {
+  const char *prog_name = *argv;
 
-    const char *prog_name = *argv;
+  /* C3: make entries a pointer instead of an array */
 
-    WordCountEntry entries[5];
+  WordCountEntry entries[5];
+  int entryCount = 0;
+  /* C2: create a variable to store the output stream to use, stdout by default 
+        Hint: use the FILE data type and understand the stdout and stderr output streams*/
+  // FILE *output = ?? // Complete this stream variable definition (Note: this will not be a file)
 
-    int entryCount = -1;
+  /* Entry point for the testrunner program */
+  if (argc > 1 && !strcmp(argv[1], "-test"))
+  {
+    run_smp0_tests(argc - 1, argv + 1);
+    return EXIT_SUCCESS;
+  }
+  /* C3: allocate (potentially) a little more memory than strictly
+       necessary, thus avoiding extensive modifications to the code below. Hint: use malloc */
 
-    /* Entry point for the testrunner program */
+  /* B4: fix argv */
 
-    if (argc > 1 && !strcmp(argv[1], "-test"))
+  argv++;
+  while (*argv != NULL)
+  {
+    if (**argv == '-')
     {
 
-        run_smp0_tests(argc - 1, argv + 1);
+      switch ((*argv)[1])
+      {
+      /* C2: -fFILENAME switch: open FILENAME and set it as the output
+             stream */
 
-        return EXIT_SUCCESS;
-    }
-
-    //as argv[0] contains program name itself, incrementing argv to the 1st argument value
-
-    argv++;
-
-    //Loop through the argv, till it encounters null value, that menas the loop will start from cat and will end after the word dog
-
-    while (*argv != NULL)
-    {
-
-        //Check for the -h option, it checks if argv starts from '-'
-
-        if (**argv == '-')
-        {
-
-            //Below switch case the checks the character after '-'. It is checked only if '-' option is used
-
-            switch ((*argv)[1])
-            {
-
-            case 'h':
-
-                printHelp(prog_name);
-
-                //On successfully checking '-h' optin is used, functoion 'printHelp' is called
-
-                break;
-
-                //Note : instead of using break, we should use return EXIT_SUCCESS;
-
-            default:
-
-                printf("%s: Invalid option %s. Use -h for help.\n", prog_name, *argv);
-            }
-        }
-        else
-        {
-
-            if (entryCount < LENGTH(entries))
-            {
-
-                entries[entryCount].word = *argv;
-
-                //entries[entryCount++].counter = 0; addressing to the question 2. Plese check there for the explanation
-
-                entries[entryCount].counter = 0;
-            }
-        }
-
-        argv++;
-
-    } // end while
-
-    if (entryCount == 0)
-    {
-
-        printf("%s: Please supply at least one word. Use -h for help.\n", prog_name);
-
-        return EXIT_FAILURE;
-    }
-
-    if (entryCount == 1)
-    {
-
-        printf("Looking for a single word\n");
+      /* B3: fix the logical flow error in the switch*/
+      case 'h':
+        printHelp(prog_name);
+        break;
+      default:
+        printf("%s: Invalid option %s. Use -h for help.\n", prog_name, *argv);
+      }
     }
     else
     {
-
-        printf("Looking for %d words\n", entryCount);
+      /* C3: the LENGTH macro will not work anymore, since entries will be a pointer, not an array */
+      if (entryCount < LENGTH(entries))
+      {
+        entries[entryCount].word = *argv;
+        entries[entryCount++].counter = 0;
+      }
     }
+    argv++;
+  } // end while
 
-    process_stream(entries, entryCount);
+  if (entryCount == 0)
+  {
+    printf("%s: Please supply at least one word. Use -h for help.\n", prog_name);
+    return EXIT_FAILURE;
+  }
+  /* C2: send output to the right stream */
+  if (entryCount == 1)
+  {
+    printf("Looking for a single word\n");
+  }
+  else
+  {
+    printf("Looking for %d words\n", entryCount);
+  }
+
+  process_stream(entries, entryCount);
   print_result(entries, entryCount);
 
   // FREE MEMORY, CLOSE FILES, STREAMS, etc.
