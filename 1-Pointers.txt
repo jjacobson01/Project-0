@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
 }
 
 Why is the above code incorrect (i.e., likely to crash)?
-
+Should crash because temp is not initialized.
 
 2) Consider the following C program.
 #include <string.h>
@@ -24,7 +24,8 @@ int main(int argc, char *argv[])
 
 A buffer overflow occurs when the program name is 9 characters long
 (e.g., "12345.exe"). Why?
-
+If temp receives 9 characters total then it the null character at the end of the string(10th position) will not be allocated
+and will cause a buffer overflow.
 
 3) Consider the following C program.
 #include <string.h>
@@ -36,7 +37,7 @@ int main(int argc, char *argv[])
 }
 
 Why does this program crash?
-
+buffer variable is being overridden but the memory is constant so it causes a crash.
 
 4) Consider the following C snippet.
 void myfunc()
@@ -47,7 +48,8 @@ void myfunc()
 }
 
 Is this correct?  What's a simpler expression for &b[0]?
-
+it works but as impler expression would be:
+char *buffer = b;
 
 5) Consider the following C program.
 #include <stdio.h>
@@ -59,6 +61,7 @@ int main(int argc, char* argv[])
 
 If this code is executed using the following line, what will be the output?
 > program1 -n5 abc
+output: ./main ogram1 -n5
 
 
 6) Consider the following C program.
@@ -77,4 +80,5 @@ int main(int argc, char *argv[])
 }
 
 What's wrong with this?
-
+It seems to work but it will end up returning the address location of the variable 
+instead of the value of the variable.

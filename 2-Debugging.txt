@@ -4,20 +4,41 @@ Part Two: Fixing the Bugs
 Understanding the code
 
   1) Explain why this program uses the exclamation operator with the
-     strcmp() function.
+      strcmp() function.
+      strcomp compares the 2 strings in it's parameters.
+      !strcomp() is use to return an integer 0 or a 1. 1 if both strings are equal or 0 if they are not equal. 
+    
 
   2) Explain why the 'LENGTH' macro returns the length of an array.
      Would it work with a pointer to a dynamically allocated array? (Hint:
      understand sizeof).
+      the 'LENGTH' macro is designed to find the length of an array in C language. the numerator sizeof(s), 
+      will multiple the size of the array in bytes by length of the array. The Denominator finds the size of
+      the first element of the array and multiplies it by the byte size. Dividing the two together gives you
+      the length of the array.
 
 Bug hunting
 
   3) Explain and fix the logical flow bug within the switch statement.
      (What happens when the -h option is used?)
+      The switch statement will either display the print from case 'h' or default. If you 
+      input h it will display both case 'h' and default because there is no 'break' in the case 'h'.
+      applying the break code will fix and will only display what is in case 'h'.
+
 
   4) Explain and fix the argument parsing error. (Why is entrycount never
      zero?)
+      entryCount will never be zero because it increments, even if you don't provide an argument.
+      if we do
+
+
+      Parsing error was that It was getting the first argv and incrementing
+      entryCount with that first argv before even getting to the flag. This 
+      would prompt us to continue with the program as normal without any
+      words supplied to it. 
 
   5) Fix print_result() to print results correctly and in the same order
-     as the words were specified on the command line.  Explain your solution.
+      as the words were specified on the command line.  Explain your solution.
+      It would not print the various words, I added a temp var "i" to access 
+      he several words and their counts. Via array notation. 
 
