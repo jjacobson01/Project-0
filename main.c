@@ -35,11 +35,12 @@ typedef struct
 
 int process_stream(WordCountEntry entries[], int entry_count)
 {
+    char *delimiters = " \n\r\f\v\t";
     short line_count = 0;
     char buffer[30];
 
     /* C4: replace gets with fgets */
-    while (gets(buffer))
+    while (fgets(buffer, sizeof(buffer), stdin))
     {
         if (*buffer == '.')
             break;
@@ -50,32 +51,35 @@ int process_stream(WordCountEntry entries[], int entry_count)
        trim the buffer to get rid of the newline, instead. 
        strtok returns NULL when no more tokens are available. */
 
-       /* Compare against each entry. 
+        /* Compare against each entry. 
     When you implement C5, you won't be able to process the entries directly from the buffer,
     but rather from returned value of strtok. Call "man strtok" in your command line to learn more about strtok*/
-
-        int i = 0;
-        while (i < entry_count)
+        char *tokens = strtok(buffer, delimiters);
+        while (tokens != NULL)
         {
-            if (!strcmp(entries[i].word, buffer))
-                entries[i].counter++;
-            i++;
+            int i = 0;
+            while (i < entry_count)
+            {
+                if (!strcmp(entries[i].word, tokens))
+                    entries[i].counter++;
+                i++;
+            }
+            tokens = strtok(NULL, delimiters);
         }
         line_count++;
     }
     return line_count;
 }
 
-void print_result(WordCountEntry entries[], int entry_count)
+void print_result(WordCountEntry entries[], int entry_count, FILE *output)
 {
     /* B5: introduce a temporary variable i and use it to count up from 0 */
     int i = 0;
     /* C2: send output to the right stream, use fprintf */
-
-    fprintf(stdout,"Result:\n");
+    fprintf(stdout, "Result:\n");
     while (i < entry_count)
     {
-        printf("%s:%d\n", entries[i].word, entries[i].counter);
+        printf(output, "%s:%d\n", entries[i].word, entries[i].counter);
         i++;
     }
 }
@@ -84,7 +88,7 @@ void printHelp(const char *name)
 {
     /* C2: send output to the right stream, use fprintf */
 
-    fprintf(stderr,"usage: %s [-h] ... \n", name);
+    fprintf(stderr, "usage: %s [-h] [-f FILENAME] <word1> ... <wordN> \n", name);
 }
 
 int main(int argc, char **argv)
@@ -93,12 +97,12 @@ int main(int argc, char **argv)
 
     /* C3: make entries a pointer instead of an array */
 
-    WordCountEntry entries[5];
+    WordCountEntry *entries;
     int entryCount = 0;
     /* C2: create a variable to store the output stream to use, stdout by default 
         Hint: use the FILE data type and understand the stdout and stderr output streams*/
     // FILE *output = ?? // Complete this stream variable definition (Note: this will not be a file)
-
+    FILE *output = stdout;
     /* Entry point for the testrunner program */
     if (argc > 1 && !strcmp(argv[1], "-test"))
     {
@@ -111,31 +115,32 @@ int main(int argc, char **argv)
     /* B4: fix argv */
 
     argv++;
+    char *alloc = malloc(sizeof(char)*30);
     while (*argv != NULL)
     {
         if (**argv == '-')
         {
 
-            switch ((argv)[0][1])
+            switch ((*argv)[1])
             {
                 /* C2: -fFILENAME switch: open FILENAME and set it as the output
              stream */
             case 'f':
-                freopen((*(argv) + 2), "w", stdout);
+                strncpy(alloc, *argv + 2, 20);
                 break;
             /* B3: fix the logical flow error in the switch*/
             case 'h':
                 printHelp(prog_name);
                 break;
             default:
-                fprintf(stderr,"%s: Invalid option %s. Use -h for help.\n", prog_name, *argv);
+                fprintf(stderr, "%s: Invalid option %s. Use -h for help.\n", prog_name, *argv);
                 break;
             }
         }
         else
         {
             /* C3: the LENGTH macro will not work anymore, since entries will be a pointer, not an array */
-            if (entryCount < LENGTH(entries))
+            if (entryCount < argc - 1)
             {
                 entries[entryCount].word = *argv;
                 entries[entryCount++].counter = 0;
@@ -146,22 +151,23 @@ int main(int argc, char **argv)
 
     if (entryCount == 0)
     {
-        fprintf(stderr,"%s: Please supply at least one word. Use -h for help.\n", prog_name);
+        fprintf(stderr, "%s: Please supply at least one word. Use -h for help.\n", prog_name);
         return EXIT_FAILURE;
     }
     /* C2: send output to the right stream */
     if (entryCount == 1)
     {
-        fprintf(stdout,"Looking for a single word\n");  
+        fprintf(output, "Looking for a single word\n");
     }
     else
     {
-        fprintf(stdout,"Looking for %d words\n", entryCount);
+        fprintf(output, "Looking for %d words\n", entryCount);
     }
 
     process_stream(entries, entryCount);
-    print_result(entries, entryCount);
+    print_result(entries, entryCount, output);
 
     // FREE MEMORY, CLOSE FILES, STREAMS, etc.
     return EXIT_SUCCESS;
+    fflush(stdout);
 }
