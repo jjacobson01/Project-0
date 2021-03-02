@@ -79,7 +79,7 @@ void print_result(WordCountEntry entries[], int entry_count, FILE *output)
     fprintf(stdout, "Result:\n");
     while (i < entry_count)
     {
-        printf(output, "%s:%d\n", entries[i].word, entries[i].counter);
+        fprintf(output, "%s:%d\n", entries[i].word, entries[i].counter);
         i++;
     }
 }
@@ -111,7 +111,7 @@ int main(int argc, char **argv)
     }
     /* C3: allocate (potentially) a little more memory than strictly
        necessary, thus avoiding extensive modifications to the code below. Hint: use malloc */
-
+    entries = (WordCountEntry *)malloc(argc*sizeof(WordCountEntry));
     /* B4: fix argv */
 
     argv++;
@@ -134,7 +134,6 @@ int main(int argc, char **argv)
                 break;
             default:
                 fprintf(stderr, "%s: Invalid option %s. Use -h for help.\n", prog_name, *argv);
-                break;
             }
         }
         else
@@ -142,7 +141,7 @@ int main(int argc, char **argv)
             /* C3: the LENGTH macro will not work anymore, since entries will be a pointer, not an array */
             if (entryCount < argc - 1)
             {
-                entries[entryCount].word = *argv;
+                entries[entryCount].word = (*argv);
                 entries[entryCount++].counter = 0;
             }
         }
