@@ -116,7 +116,7 @@ int main(int argc, char **argv)
         if (**argv == '-')
         {
 
-            switch ((argv)[0])[1])
+            switch ((argv)[0][1])
             {
                 /* C2: -fFILENAME switch: open FILENAME and set it as the output
              stream */
