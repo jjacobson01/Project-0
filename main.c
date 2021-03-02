@@ -35,7 +35,7 @@ typedef struct
 
 int process_stream(WordCountEntry entries[], int entry_count)
 {
-    char *delimiters = " \n\r\f\v\t";
+    char *delimiters = " \n\t";
     short line_count = 0;
     char buffer[30];
 
@@ -111,11 +111,12 @@ int main(int argc, char **argv)
     }
     /* C3: allocate (potentially) a little more memory than strictly
        necessary, thus avoiding extensive modifications to the code below. Hint: use malloc */
-    entries = (WordCountEntry *)malloc(argc*sizeof(WordCountEntry));
+    entries = (WordCountEntry *)malloc(argc * sizeof(WordCountEntry));
+    char *alloc = malloc(sizeof(char) * 30);
+
     /* B4: fix argv */
 
     argv++;
-    char *alloc = malloc(sizeof(char)*30);
     while (*argv != NULL)
     {
         if (**argv == '-')
@@ -141,7 +142,7 @@ int main(int argc, char **argv)
             /* C3: the LENGTH macro will not work anymore, since entries will be a pointer, not an array */
             if (entryCount < argc - 1)
             {
-                entries[entryCount].word = (*argv);
+                entries[entryCount].word = *argv;
                 entries[entryCount++].counter = 0;
             }
         }
