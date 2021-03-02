@@ -137,12 +137,11 @@ int main(int argc, char **argv)
 
         //On successfully checking '-h' optin is used, functoion 'printHelp' is called
 
-        //break;
+        break;
 
         //Note : instead of using break, we should use return EXIT_SUCCESS;
 
-        return EXIT_SUCCESS;
-
+        
       default:
 
         printf("%s: Invalid option %s. Use -h for help.\n", prog_name, *argv);
